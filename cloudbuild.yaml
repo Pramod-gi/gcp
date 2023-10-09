@@ -6,11 +6,11 @@ steps:
 
   - name: 'gcr.io/cloud-builders/docker'
 
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/nodeapp_image', '.']
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/$_REPOSITORY_NAME/nodeapp_image', '.']
 
   - name: 'gcr.io/cloud-builders/docker'
 
-    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/nodeapp_image']
+    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/$_REPOSITORY_NAME/nodeapp_image']
 
   - name: 'gcr.io/cloud-builders/gcloud'
 
@@ -18,7 +18,7 @@ steps:
 
       'run', 'deploy', 'service',
 
-      '--image', 'us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/nodeapp_image',
+      '--image', 'us-central1-docker.pkg.dev/$PROJECT_ID/$_REPOSITORY_NAME/nodeapp_image',
 
       '--platform', 'managed',
 
