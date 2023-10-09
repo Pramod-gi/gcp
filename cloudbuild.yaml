@@ -1,40 +1,35 @@
 steps:
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  - name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: 'bash'
     args:
       - './set_repo_name.sh'
-
   - name: 'gcr.io/cloud-builders/npm'
     args: ['install']
-
   - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'build'
-      - '-t'
-      - 'us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/nodeapp_image'
-      - '.'
-
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/nodeapp_image', '.']
   - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'push'
-      - 'us-central1-docker.pkg.dev/$PROJECT_ID/${REPOSITORY_NAME}/nodeapp_image'
-
+    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/nodeapp_image']
   - name: 'gcr.io/cloud-builders/gcloud'
     args:
       - 'run'
       - 'deploy'
       - 'service'
       - '--image'
-      - 'us-central1-docker.pkg.dev/$PROJECT_ID/${REPOSITORY_NAME}/nodeapp_image'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/nodeapp_image'
       - '--platform'
       - 'managed'
       - '--region'
       - 'us-central1'
       - '--port'
       - '8000'
-      - '--allow-unauthenticated'
+      - '--allow-unauthenticated'  # Add this line if you want to allow unauthenticated access (for public services)
 
+# Set up environment variables
+substitutions:
+  _LOCATION: 'your-artifact-registry-location'
 
+# Timeout in seconds
+# timeout: '1200s'
 
 # steps:
 #   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
