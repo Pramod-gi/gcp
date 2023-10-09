@@ -8,4 +8,4 @@ echo $REPOSITORY_NAME
 # Export the REPOSITORY_NAME as an environment variable
 export REPOSITORY_NAME
 
-chmod +x bash.sh
+chmod +x set_repo_name.sh

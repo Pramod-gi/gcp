@@ -24,9 +24,9 @@ steps:
       - '8000'
       - '--allow-unauthenticated'  # Add this line if you want to allow unauthenticated access (for public services)
 
-# Set up environment variables
-substitutions:
-  _LOCATION: 'your-artifact-registry-location'
+# Timeout in seconds
+timeout: '1200s'
+
 
 # Timeout in seconds
 # timeout: '1200s'
