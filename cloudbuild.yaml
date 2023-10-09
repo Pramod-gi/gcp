@@ -2,7 +2,7 @@ steps:
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'bash'
     args:
-      - './bash.sh'
+      - './set_repo_name.sh'
 
   - name: 'gcr.io/cloud-builders/npm'
     args: ['install']
