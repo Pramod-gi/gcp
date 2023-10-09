@@ -34,7 +34,7 @@ async function gcp_Read_Projectdetails() {
         });
         if (response.status === 200) {
             const project_Id = response.data; // Assuming the project ID is in the response body
-            console.log(`Current project ID: ${projectId}`);
+            console.log(`Current project ID: ${project_Id}`);
             if (project_Id) {
                 global.projectId = project_Id;
                 console.log(`Project exists.`);
