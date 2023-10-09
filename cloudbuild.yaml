@@ -74,35 +74,38 @@
 #       - '--allow-unauthenticated'
 
 
+
 steps:
+
   - name: 'gcr.io/cloud-builders/npm'
+
     args: ['install']
 
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/nodeapp_image', '.']
+
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/$_REPOSITORY_NAME/nodeapp_image', '.']
 
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/nodeapp_image']
+
+    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/$_REPOSITORY_NAME/nodeapp_image']
 
   - name: 'gcr.io/cloud-builders/gcloud'
-    args:
-      - 'run'
-      - 'deploy'
-      - 'service'
-      - '--image'
-      - 'us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/nodeapp_image'
-      - '--platform'
-      - 'managed'
-      - '--region'
-      - 'us-central1'
-      - '--port'
-      - '8000'
-      - '--allow-unauthenticated'  # Add this line if you want to allow unauthenticated access (for public services)
 
-substitutions:
-  _REPOSITORY_NAME: '${REPOSITORY_NAME}'
+    args: [
 
+      'run', 'deploy', 'service',
 
+      '--image', 'us-central1-docker.pkg.dev/$PROJECT_ID/$_REPOSITORY_NAME/nodeapp_image',
+
+      '--platform', 'managed',
+
+      '--region', 'us-central1',
+
+      '--port', '8000',
+
+      '--allow-unauthenticated'  # Add this line if you want to allow unauthenticated access (for public services)
+
+    ]
 
     #         docker build -t "us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/dmyimage:$SHORT_SHA" .
 # # # ciscodocker
