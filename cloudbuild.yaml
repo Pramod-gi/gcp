@@ -1,0 +1,119 @@
+
+steps:
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['install']
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        # List existing Artifact Registry repositories in the project and capture the output
+        export REPO_LIST=$(gcloud artifacts repositories list --location='us-central1' --format="value(name)")
+      
+
+        # Set the first repository name as an environment variable
+        REPOSITORY_NAME=$(echo "$REPO_LIST" | awk '{print $1}')
+        echo "Using Repository: $REPOSITORY_NAME"
+
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        # Build and push Docker image using the REPOSITORY_NAME environment variable
+        docker build -t "us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/dmyimage:$SHORT_SHA" .
+        docker push "us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/dmyimage:$SHORT_SHA"
+
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: [
+      'run', 'deploy', 'service2',
+      '--image', "us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/dmyimage:$SHORT_SHA",
+      '--platform', 'managed',
+      '--region', 'us-central1',
+      '--port', '8000',
+      '--allow-unauthenticated'  # Add this line if you want to allow unauthenticated access (for public services)
+    ]
+options:
+  dynamicSubstitutions: true
+
+# substitutions:
+#   _PROJECT_ID: $PROJECT_ID
+
+# steps:
+#   - name: 'gcr.io/cloud-builders/npm'
+#     args: ['install']
+#   - name: 'gcr.io/cloud-builders/gcloud'
+#     entrypoint: 'bash'
+#     args:
+#       - '-c'
+#       - |
+#         # List existing Artifact Registry repositories in the project
+
+#         REPO_LIST=$(gcloud artifacts repositories list --location='us-central1' --format="value(name)")
+#         echo "Repository List: $REPO_LIST"
+
+#         # Set the first repository name as the substitution variable
+#         _REPOSITORY_NAME=$(echo "$REPO_LIST" | head -n 1)
+#         echo "Using Repository: $_REPOSITORY_NAME"
+#         echo "export _REPOSITORY_NAME=$_REPOSITORY_NAME" >> /workspace/workspace-env
+
+#   - name: 'gcr.io/cloud-builders/docker'
+#     args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/$_REPOSITORY_NAME/dmyimage:$SHORT_SHA', '.']
+
+#   - name: 'gcr.io/cloud-builders/docker'
+#     args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/$_REPOSITORY_NAME/dmyimage:$SHORT_SHA']
+
+#   - name: 'gcr.io/cloud-builders/gcloud'
+
+#     args: [
+#       'run', 'deploy', 'service2',
+#       '--image', 'us-central1-docker.pkg.dev/$PROJECT_ID/$_REPOSITORY_NAME/dmyimage:$SHORT_SHA',
+
+#       '--platform', 'managed',
+
+#       '--region', 'us-central1',
+
+#       '--port', '8000',
+
+#       '--allow-unauthenticated'  # Add this line if you want to allow unauthenticated access (for public services)
+
+#     ]
+
+# variables:
+#   REPO_LIST: []
+#   REPOSITORY_NAME: ""
+# steps:
+#   - name: 'gcr.io/cloud-builders/npm'
+#     args: ['install']
+
+#   - name: 'gcr.io/cloud-builders/gcloud'
+#     entrypoint: 'bash'
+#     args:
+#       - '-c'
+#       - |
+#         # List existing Artifact Registry repositories in the project
+#         REPO_LIST=$(gcloud artifacts repositories list --location='us-central1' --format="value(name)")
+#         echo "Repository List: $REPO_LIST"
+
+#         # Set the first repository name as an environment variable
+#         export REPOSITORY_NAME=$(echo "$REPO_LIST" | head -n 1)
+#         echo "Using Repository: $REPOSITORY_NAME"
+
+#   - name: 'gcr.io/cloud-builders/docker'
+#     entrypoint: 'bash'
+#     args:
+#       - '-c'
+#       - |
+#         # Build and push Docker image using the REPOSITORY_NAME environment variable
+#         docker build -t "us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/dmyimage:$SHORT_SHA" .
+#         docker push "us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/dmyimage:$SHORT_SHA"
+
+#   - name: 'gcr.io/cloud-builders/gcloud'
+#     args: [
+#       'run', 'deploy', 'service2',
+#       '--image', "us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/dmyimage:$SHORT_SHA",
+#       '--platform', 'managed',
+#       '--region', 'us-central1',
+#       '--port', '8000',
+#       '--allow-unauthenticated'  # Add this line if you want to allow unauthenticated access (for public services)
+#     ]
