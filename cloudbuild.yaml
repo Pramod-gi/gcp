@@ -74,50 +74,35 @@
 #       - '--allow-unauthenticated'
 
 
+steps:
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['install']
 
-steps:
-steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/nodeapp_image', '.']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/nodeapp_image']
+
   - name: 'gcr.io/cloud-builders/gcloud'
-    entrypoint: 'bash'
     args:
-      - '-c'
-      - |
-        # Use gcloud CLI to fetch the repository name from Artifact Registry
-        REPOSITORY_NAME=$(gcloud artifacts repositories list --location=${LOCATION} --project=${PROJECT_ID} --format="value(name)")
-        echo "REPOSITORY_NAME=${REPOSITORY_NAME}" >> $K_BUILDER_OUTPUT
+      - 'run'
+      - 'deploy'
+      - 'service'
+      - '--image'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/nodeapp_image'
+      - '--platform'
+      - 'managed'
+      - '--region'
+      - 'us-central1'
+      - '--port'
+      - '8000'
+      - '--allow-unauthenticated'  # Add this line if you want to allow unauthenticated access (for public services)
 
 substitutions:
   _REPOSITORY_NAME: '${REPOSITORY_NAME}'
 
-  - name: 'gcr.io/cloud-builders/npm'
 
-    args: ['install']
-
-  - name: 'gcr.io/cloud-builders/docker'
-
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/nodeapp_image', '.']
-
-  - name: 'gcr.io/cloud-builders/docker'
-
-    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/nodeapp_image']
-
-  - name: 'gcr.io/cloud-builders/gcloud'
-
-    args: [
-
-      'run', 'deploy', 'service',
-
-      '--image', 'us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/nodeapp_image',
-
-      '--platform', 'managed',
-
-      '--region', 'us-central1',
-
-      '--port', '8000',
-
-      '--allow-unauthenticated'  # Add this line if you want to allow unauthenticated access (for public services)
-
-    ]
 
     #         docker build -t "us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/dmyimage:$SHORT_SHA" .
 # # # ciscodocker
