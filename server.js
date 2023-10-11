@@ -5,10 +5,10 @@ const morgan = require('morgan');
 const nocache = require('nocache');
 require('dotenv').config();
 
-const {_BUCKET_NAME:current_BUCKET_NAME,_PROJECT_ID:pojectId} = process.env;
+const {_BUCKET_NAME:current_BUCKET_NAME,_PROJECT_ID:projectId,PORT=7000} = process.env;
 
-console.log("============= ENV ======>",process.env, { pojectId, current_BUCKET_NAME})
-global.gConfig = { config:{},current_BUCKET_NAME ,pojectId};
+console.log("============= ENV ======>",{ projectId,PORT, current_BUCKET_NAME})
+global.gConfig = { config:{},current_BUCKET_NAME ,PORT,projectId};
 
 
 //* **************cache handling**************8 */
@@ -72,7 +72,7 @@ process
 //  gcp_Read_Projectdetails()
 
       try {
-        app.listen(7000, async () => {
+        app.listen(PORT, async () => {
           try {           
             let gcp_bucket = await require('./config/config').gcp_Read_Configuration();
             app.get('/config',(req,res)=>{

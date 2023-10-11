@@ -14,7 +14,7 @@ RUN rm -rf node_modules
 RUN npm install
 
 # Make port 7000 available to the world outside this container
-#XPOSE 8081
+#EXPOSE 8081
 
 
 # Define the command to run your application
