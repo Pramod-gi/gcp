@@ -1,111 +1,47 @@
-# steps:
-#   - name: 'gcr.io/cloud-builders/gcloud'
-#     entrypoint: 'bash'
-#     args:
-#       - './set_repo_name.sh'
-#   - name: 'gcr.io/cloud-builders/npm'
-#     args: ['install']
-#   - name: 'gcr.io/cloud-builders/docker'
-#     args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/nodeapp_image', '.']
-#   - name: 'gcr.io/cloud-builders/docker'
-#     args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/nodeapp_image']
-#   - name: 'gcr.io/cloud-builders/gcloud'
-#     args:
-#       - 'run'
-#       - 'deploy'
-#       - 'service'
-#       - '--image'
-#       - 'us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/nodeapp_image'
-#       - '--platform'
-#       - 'managed'
-#       - '--region'
-#       - 'us-central1'
-#       - '--port'
-#       - '8000'
-#       - '--allow-unauthenticated'  # Add this line if you want to allow unauthenticated access (for public services)
+# substitutions:
 
-# # Timeout in seconds
-# timeout: '1200s'
-
-
-# Timeout in seconds
-# timeout: '1200s'
-
-# steps:
-#   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-#     entrypoint: 'bash'
-#     args:
-#       - '-c'
-#       - |
-#         # Use gcloud CLI to list repositories and extract the desired repository name
-#         REPOSITORY_NAME=$(gcloud artifacts repositories list --location=$LOCATION --format="value(name)")
-
-#         # Set the REPOSITORY_NAME as an environment variable
-#         echo "REPOSITORY_NAME=${REPOSITORY_NAME}" >> $ENV_FILE
-
-#   - name: 'gcr.io/cloud-builders/npm'
-#     args: ['install']
-
-#   - name: 'gcr.io/cloud-builders/docker'
-#     args:
-#       - 'build'
-#       - '-t'
-#       - 'us-central1-docker.pkg.dev/$PROJECT_ID/${REPOSITORY_NAME}/nodeapp_image'
-#       - '.'
-
-#   - name: 'gcr.io/cloud-builders/docker'
-#     args:
-#       - 'push'
-#       - 'us-central1-docker.pkg.dev/$PROJECT_ID/${REPOSITORY_NAME}/nodeapp_image'
-
-#   - name: 'gcr.io/cloud-builders/gcloud'
-#     args:
-#       - 'run'
-#       - 'deploy'
-#       - 'service'
-#       - '--image'
-#       - 'us-central1-docker.pkg.dev/$PROJECT_ID/${REPOSITORY_NAME}/nodeapp_image'
-#       - '--platform'
-#       - 'managed'
-#       - '--region'
-#       - 'us-central1'
-#       - '--port'
-#       - '8000'
-#       - '--allow-unauthenticated'
-
-
+#   _VARIABLES_JSON: gs://config222/variables.json
 
 steps:
 
   - name: 'gcr.io/cloud-builders/npm'
-
     args: ['install']
-
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ["run", "create-env"]
+    env:
+      - '_NODE_ENV=  $_NODE_ENV'
+      - '_BUCKET_NAME= $_BUCKET_NAME'
+      - '_PROJECT_ID= $PROJECT_ID'
   - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
 
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/$_REPOSITORY_NAME/nodeapp_image', '.']
+        # Build and push Docker image using the REPOSITORY_NAME environment variable
 
-  - name: 'gcr.io/cloud-builders/docker'
+        docker build -t "us-central1-docker.pkg.dev/$PROJECT_ID/$_REPOSITORY_NAME/dmyimage" .
 
-    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/$_REPOSITORY_NAME/nodeapp_image']
+        docker push "us-central1-docker.pkg.dev/$PROJECT_ID/$_REPOSITORY_NAME/dmyimage"
 
   - name: 'gcr.io/cloud-builders/gcloud'
 
     args: [
 
-      'run', 'deploy', 'service',
+      'run', 'deploy', 'dev_cisco',
 
-      '--image', 'us-central1-docker.pkg.dev/$PROJECT_ID/$_REPOSITORY_NAME/nodeapp_image',
+      '--image', "us-central1-docker.pkg.dev/$PROJECT_ID/$_REPOSITORY_NAME/dmyimage",
 
       '--platform', 'managed',
 
       '--region', 'us-central1',
 
-      '--port', '8000',
+      '--port', '7000',
 
       '--allow-unauthenticated'  # Add this line if you want to allow unauthenticated access (for public services)
 
     ]
 
-    #         docker build -t "us-central1-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/dmyimage:$SHORT_SHA" .
-# # # ciscodocker
+options:
+
+  dynamicSubstitutions: true
