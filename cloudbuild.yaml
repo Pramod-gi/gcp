@@ -9,7 +9,7 @@ steps:
   - name: 'gcr.io/cloud-builders/npm'
     args: ["run", "create-env"]
     env:
-      - '_NODE_ENV=  $_NODE_ENV'
+      # - '_NODE_ENV=  $_NODE_ENV'
       - '_BUCKET_NAME= $_BUCKET_NAME'
       - '_PROJECT_ID= $PROJECT_ID'
   - name: 'gcr.io/cloud-builders/docker'
@@ -28,7 +28,7 @@ steps:
 
     args: [
 
-      'run', 'deploy', 'dev_cisco',
+      'run', 'deploy', 'dev-cisco',
 
       '--image', "us-central1-docker.pkg.dev/$PROJECT_ID/$_REPOSITORY_NAME/dmyimage",
 
