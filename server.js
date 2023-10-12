@@ -96,10 +96,10 @@ process
                 console.log("fetch notify data====>",events);
                   //let output = await require('./config/config').gcp_Read_Configuration();
 
-                  if (JSON.stringify(currentConfig["config"]) !== JSON.stringify(data)) {
+                  if (JSON.stringify(currentConfig["config"]) !== JSON.stringify(events.jsonData)) {
                     console.log('Config file updated.');
                     console.log(data);
-                    currentConfig["config"] = data;
+                    currentConfig["config"] = events.jsonData;
                     global.gConfig = { ...currentConfig }; // Avoid garbage memory
                     console.log("After Updated config ===>", global.gConfig);
                   } else {
