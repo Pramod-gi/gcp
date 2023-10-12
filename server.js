@@ -74,7 +74,7 @@ process
       try {
         app.listen(PORT, async () => {
           try {           
-            let gcp_bucket = await require('./config/config').gcp_Read_Configuration();
+            //let gcp_bucket = await require('./config/config').gcp_Read_Configuration();
             app.get('/config',(req,res)=>{
               try {
                 return res.status(200).send(global.gConfig)
@@ -98,7 +98,7 @@ process
 
                   if (JSON.stringify(currentConfig["config"]) !== JSON.stringify(data)) {
                     console.log('Config file updated.');
-                    currentConfig["config"] = data;
+                    currentConfig["config"] = JSON.stringify(data);
                     global.gConfig = { ...currentConfig }; // Avoid garbage memory
                     console.log("After Updated config ===>", global.gConfig);
                   } else {
