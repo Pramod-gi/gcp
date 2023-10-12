@@ -85,6 +85,8 @@ process
                 })
               }
              })
+
+             //API end point trigger by cloud function once bucket file changes/over-write 
              app.post('/notify',async(req,res)=>{
               try {
                 let events= req.body;
