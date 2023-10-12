@@ -89,9 +89,21 @@ process
              //API end point trigger by cloud function once bucket file changes/over-write 
              app.post('/notify',async(req,res)=>{
               try {
-                let events= req.body;
+                //let events= req.body;
+                const { bucketName, name, data } = req.body;
+                const currentConfig = global?.gConfig;
+                console.log("global config contents ===>", currentConfig);
                 console.log("fetch notify data====>",events);
-                  let output = await require('./config/config').gcp_Read_Configuration();
+                  //let output = await require('./config/config').gcp_Read_Configuration();
+
+                  if (JSON.stringify(currentConfig["config"]) !== JSON.stringify(data)) {
+                    console.log('Config file updated.');
+                    currentConfig["config"] = parsedConfig;
+                    global.gConfig = { ...currentConfig }; // Avoid garbage memory
+                    console.log("After Updated config ===>", global.gConfig);
+                  } else {
+                    console.log("No update required for configuration.");
+                  }
                 return res.status(200).send({status:true,events})
               } catch (error) {
                 return res.status(500).send({
