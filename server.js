@@ -89,7 +89,7 @@ process
              //API end point trigger by cloud function once bucket file changes/over-write 
              app.post('/notify',async(req,res)=>{
               try {
-                //let events= req.body;
+                let events= req.body;
                 const { bucketName, name, data } = req.body;
                 const currentConfig = global?.gConfig;
                 console.log("global config contents ===>", currentConfig);
