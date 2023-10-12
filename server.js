@@ -98,7 +98,6 @@ process
 
                   if (JSON.stringify(currentConfig["config"]) !== JSON.stringify(events.jsonData)) {
                     console.log('Config file updated.');
-                    console.log(data);
                     currentConfig["config"] = events.jsonData;
                     global.gConfig = { ...currentConfig }; // Avoid garbage memory
                     console.log("After Updated config ===>", global.gConfig);
