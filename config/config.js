@@ -13,7 +13,7 @@ async function gcp_Read_Configuration() {
     console.log("global config contents ===>", currentConfig);
     
     
-    const {current_BUCKET_NAME} =currentConfig; // Assuming the project ID is in the response global config
+    const {current_BUCKET_NAME,projectId} =currentConfig; // Assuming the project ID is in the response global config
     console.log("in quickstart gcp_Read_Configuration", {projectId,current_BUCKET_NAME});
       console.log(`Current project ID in global config: ${projectId}`);
 
