@@ -13,16 +13,16 @@ async function gcp_Read_Configuration() {
     console.log("global config contents ===>", currentConfig);
     
     
-    const {projectId,current_BUCKET_NAME} =currentConfig; // Assuming the project ID is in the response global config
+    const {current_BUCKET_NAME} =currentConfig; // Assuming the project ID is in the response global config
     console.log("in quickstart gcp_Read_Configuration", {projectId,current_BUCKET_NAME});
       console.log(`Current project ID in global config: ${projectId}`);
 
-      if (!projectId) {
-        console.log(`Project ${projectId} does not exist.`);
-        return global.gConfig;
-      }
+      // if (!projectId) {
+      //   console.log(`Project ${projectId} does not exist.`);
+      //   return global.gConfig;
+      // }
 
-      const storage = new Storage({ projectId });
+      const storage = new Storage({  });
       const [buckets] = await storage.getBuckets();
                 // Check if the current_BUCKET_NAME exists in the list of buckets
     
